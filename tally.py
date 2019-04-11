@@ -5,8 +5,10 @@ import sys
 
 from collections import defaultdict
 
-INDEXES1 = frozenset(['GGCTGTTG', 'AACACCAT', 'CGTGTCCA', 'GGGGAGGT',
-   'CTGCACAC', 'CGAAACAG', 'GCGAGCGG', 'GGCAAGTC', 'GAATTCAA',
+# Reverse complement of the primer sequence.
+RT_INDEXES = frozenset(['GGCTGTTG', 'AACACCAT', 'CGTGTCCA',
+   'GGGGAGGT', 'CTGCACAC', 'CGAAACAG', 'GCGAGCGG', 'GGCAAGTC',
+   'GAATTCAA',
    'AGTGGATC', 'TCGACAAT', 'GTGCGAGA', 'GCGCGTCT', 'ATTTTTAG',
    'ACTTAGGG', 'TAGGGCTA', 'ACACGACA', 'CCATCACT', 'TATGCCCC',
    'ACTCCGTT', 'TCGTTTTC', 'GGTAAAGA', 'AAATTTGT', 'TCACCCAC',
@@ -26,7 +28,9 @@ INDEXES1 = frozenset(['GGCTGTTG', 'AACACCAT', 'CGTGTCCA', 'GGGGAGGT',
    'GAAGTGTG', 'AAGATGCA', 'GGACGATT', 'TACAGATC', 'GATCGCTG',
    'CTTGGCAT', 'CGGTTCGG',])
 
-INDEXES2 = frozenset(['ATTCCAGT', 'TACCACAT', 'ACAAATAC', 'CGATAACA',
+# Reverse complement of the primer sequence.
+PCR_INDEXES2 = frozenset(['ATTCCAGT', 'TACCACAT', 'ACAAATAC',
+   'CGATAACA',
    'GCTTGTGC', 'GCAGCTCA', 'CAGGACAG', 'AATGGAAT', 'CATTCGGC',
    'GTCCTTAA', 'AGTTGCTT', 'GTGTCGCT', 'CTAATGCA', 'CCATAGTC',
    'GTCCGCGG', 'GACGATTA', 'ATTGATGA', 'TTCTTACG', 'TGGAAAGG',
@@ -61,18 +65,18 @@ def main(canonical, f):
    dict_of_barcodes = \
       defaultdict(lambda: defaultdict(lambda: defaultdict(int)))
    for line in f:
-      brcd,index1,index2,umi = line.split()
+      brcd,idx1,idx2,umi = line.split()
       if brcd not in canonical:
          continue
-      if index1 not in INDEXES1 or index2 not in INDEXES2:
+      if idx1 not in INDEXES_RT or idx2 not in INDEXES_PCR:
          continue
       brcd = canonical[brcd]
-      dict_of_barcodes[brcd][(index1, index2)][umi] += 1
+      dict_of_barcodes[brcd][(idx1, idx2)][umi] += 1
    for brcd,dict_of_indexes in dict_of_barcodes.items():
-      for (index1, index2), C in dict_of_indexes.items():
+      for (idx1, idx2), C in dict_of_indexes.items():
          S = [a for a in C.values() if a > 2]
          if len(S) > 0:
-            print brcd, index1, index2, len(S)
+            print brcd, idx1, idx2, len(S)
 
 
 if __name__ == '__main__':
