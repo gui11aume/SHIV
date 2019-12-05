@@ -6,8 +6,6 @@ import sys
 
 import seeq
 
-from gzopen import gzopen
-
 def main(f):
    constant = seeq.compile('TATAGTGAGTCGTATTAAAAGCGAAAGGGAAACCAGAGGAGC', 5)
    for lineno,line in enumerate(f):
@@ -25,8 +23,8 @@ def main(f):
             continue
          UMI = tail[:4]
          index1 = tail[4:12]
-         print barcode, index1, index2, UMI
+         sys.stdout.write('%s %s %s %s\n' % (barcode, index1, index2, UMI))
 
 if __name__ == '__main__':
-   with gzopen(sys.argv[1]) as f:
+   with open(sys.argv[1]) as f:
       main(f)
